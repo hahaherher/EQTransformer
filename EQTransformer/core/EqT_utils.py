@@ -119,7 +119,8 @@ class DataGenerator(keras.utils.Sequence):
         self.batch_size = batch_size
         self.phase_window = phase_window
         self.list_IDs = list_IDs
-        self.file_name = file_name        
+        self.file_names = file_name      
+        
         self.n_channels = n_channels
         self.shuffle = shuffle
         self.on_epoch_end()
@@ -328,13 +329,30 @@ class DataGenerator(keras.utils.Sequence):
         y1 = np.zeros((self.batch_size, self.dim, 1))
         y2 = np.zeros((self.batch_size, self.dim, 1))
         y3 = np.zeros((self.batch_size, self.dim, 1))
-        fl = h5py.File(self.file_name, 'r')
+        # fl = h5py.File(self.file_name, 'r')
+        
+
+        if isinstance(self.file_names, str):
+            files = [(h5py.File(self.file_names, 'r'))]
+        elif isinstance(self.file_names, list):
+            files = [h5py.File(file_name, 'r') for file_name in self.file_names]
+        else:
+            raise ValueError("Invalid input_csv value. It should be either a string or a list of strings.")
+          
 
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             additions = None
-            dataset = fl.get('data/'+str(ID))
-
+            # dataset = fl.get('data/'+str(ID))
+            
+            for fl_i in files:
+                dataset = fl_i.get('data/'+str(ID))
+                # print(str(ID))
+                if dataset is not None:
+                    # print(dataset.shape)
+                    break
+        
+        
             if ID.split('_')[-1] == 'EV':
                 data = np.array(dataset)                    
                 spt = int(dataset.attrs['p_arrival_sample']);
@@ -526,7 +544,10 @@ class DataGenerator(keras.utils.Sequence):
                         if add_sst:
                             y3[i, add_sst-20:add_sst+20, 0] = 1                 
 
-        fl.close() 
+        # fl.close() 
+        for fl_i in files:
+            fl_i.close() 
+        
                            
         return X, y1.astype('float32'), y2.astype('float32'), y3.astype('float32')
 

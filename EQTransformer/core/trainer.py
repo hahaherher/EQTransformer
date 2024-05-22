@@ -285,7 +285,7 @@ def trainer(input_hdf5=None,
             
         if args['mode'] == 'generator': 
             
-            params_training = {'file_name': str(args['input_hdf5']), 
+            params_training = {'file_name': (args['input_hdf5']), 
                               'dim': args['input_dimention'][0],
                               'batch_size': args['batch_size'],
                               'n_channels': args['input_dimention'][-1],
@@ -302,7 +302,7 @@ def trainer(input_hdf5=None,
                               'scale_amplitude_r': args['scale_amplitude_r'],
                               'pre_emphasis': args['pre_emphasis']}
                         
-            params_validation = {'file_name': str(args['input_hdf5']),  
+            params_validation = {'file_name': (args['input_hdf5']),  
                                  'dim': args['input_dimention'][0],
                                  'batch_size': args['batch_size'],
                                  'n_channels': args['input_dimention'][-1],
@@ -452,8 +452,19 @@ def _split(args, save_dir):
                 
     """       
     
-    df = pd.read_csv(args['input_csv'])
-    ev_list = df.trace_name.tolist()    
+    # df = pd.read_csv(args['input_csv'])
+    # ev_list = df.trace_name.tolist()    
+    if isinstance(args['input_csv'], str):
+        df = pd.read_csv(args['input_csv'])
+        ev_list = df.trace_name.tolist()    
+    elif isinstance(args['input_csv'], list):
+        ev_list = []
+        for csv_file in args['input_csv']:
+            df = pd.read_csv(csv_file)
+            ev_list.extend(df.trace_name.tolist())
+    else:
+        raise ValueError("Invalid input_csv value. It should be either a string or a list of strings.")
+    
     np.random.shuffle(ev_list)     
     training = ev_list[:int(args['train_valid_test_split'][0]*len(ev_list))]
     validation =  ev_list[int(args['train_valid_test_split'][0]*len(ev_list)):
@@ -639,7 +650,7 @@ def _document_training(history, model, start_training, end_training, save_dir, s
         
     """   
     
-    np.save(save_dir+'/history',history)
+    #np.save(save_dir+'/history',history)
     model.save(save_dir+'/final_model.h5')
     model.to_json()   
     model.save_weights(save_dir+'/model_weights.h5')
