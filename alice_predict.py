@@ -1,0 +1,41 @@
+from EQTransformer.core.predictor import predictor
+
+# predictor(input_dir='./ModelsAndSampleData/',   
+#          input_model='./ModelsAndSampleData/EqT_original_model.h5',
+#          output_dir='detections1',
+#          estimate_uncertainty=False, 
+#          output_probabilities=False,
+#          number_of_sampling=5,
+#          loss_weights=[0.02, 0.40, 0.58],          
+#          detection_threshold=0.3,                
+#          P_threshold=0.3,
+#          S_threshold=0.3, 
+#          number_of_plots=10,
+#          plot_mode='time',
+#          batch_size=500,
+#          number_of_cpus=4,
+#          keepPS=False,
+#          spLimit=60) 
+
+predictor(input_dir='/home/aliceyu/datasets/STEAD/',
+                    #  ['/home/aliceyu/datasets/STEAD/chunk1/',
+                    #  '/home/aliceyu/datasets/STEAD/chunk3/',
+                    #  '/home/aliceyu/datasets/STEAD/chunk4/',
+                    #  '/home/aliceyu/datasets/STEAD/chunk5/',
+                    #  '/home/aliceyu/datasets/STEAD/chunk6/'],   
+         input_model='./ModelsAndSampleData/EqT_original_model.h5',#,./test_trainer_chunk2and1_outputs/final_model.h5'
+         output_dir='detections1',
+         estimate_uncertainty=False, 
+         output_probabilities=False,
+         number_of_sampling=5,
+         loss_weights=[0.02, 0.40, 0.58],          
+         detection_threshold=0.2,                
+         P_threshold=0.1,
+         S_threshold=0.1, 
+         number_of_plots=10,
+         plot_mode='time_frequency',
+         batch_size=500,
+         number_of_cpus=4,
+         keepPS=False,
+         spLimit=60 
+         ) 

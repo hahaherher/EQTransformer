@@ -231,13 +231,15 @@ def predictor(input_dir=None,
     print('============================================================================')
     print('Running EqTransformer ', str(EQT_VERSION))
             
-    print(' *** Loading the model ...', flush=True)        
+    print(' *** Loading the model ...', flush=True)       
+
     model = load_model(args['input_model'], 
                        custom_objects={'SeqSelfAttention': SeqSelfAttention, 
                                        'FeedForward': FeedForward,
                                        'LayerNormalization': LayerNormalization, 
                                        'f1': f1                                                                            
                                         })
+    print(model)
     model.compile(loss = args['loss_types'],
                   loss_weights =  args['loss_weights'],           
                   optimizer = Adam(lr = 0.001),
@@ -265,8 +267,10 @@ def predictor(input_dir=None,
                 args["input_hdf5"] = args["input_dir"]+"\\"+st+".hdf5"
                 args["input_csv"] = args["input_dir"]+"\\"+st+".csv"
             else:            
-                args["input_hdf5"] = args["input_dir"]+"/"+st+".hdf5"
-                args["input_csv"] = args["input_dir"]+"/"+st+".csv"
+                # args["input_hdf5"] = args["input_dir"]+"/"+st+".hdf5"
+                # args["input_csv"] = args["input_dir"]+"/"+st+".csv"
+                args["input_hdf5"] = args["input_dir"]+"/"+st+"/"+st+".hdf5"
+                args["input_csv"] = args["input_dir"]+"/"+st+"/"+st+".csv"
         
             save_dir = os.path.join(out_dir, str(st)+'_outputs')
             out_probs = os.path.join(save_dir, 'prediction_probabilities.hdf5')
@@ -335,7 +339,7 @@ def predictor(input_dir=None,
                     dataset = fl.get('data/'+str(ID))
                     pred_set.update( {str(ID) : dataset})  
                     
-                plt_n, detection_memory= _gen_writer(new_list, args, prob_dic, pred_set, HDF_PROB, predict_writer, save_figs, csvPr_gen, plt_n, detection_memory, keepPS, allowonlyS, spLimit)    
+                # plt_n, detection_memory= _gen_writer(new_list, args, prob_dic, pred_set, HDF_PROB, predict_writer, save_figs, csvPr_gen, plt_n, detection_memory, keepPS, allowonlyS, spLimit)    
     
             end_Predicting = time.time() 
             delta = (end_Predicting - start_Predicting) 
